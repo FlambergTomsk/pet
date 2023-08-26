@@ -1,0 +1,252 @@
+.field {
+  display: block;
+  width: 100%;
+
+  &--disabled {
+    .field__wrap {
+      pointer-events: none;
+      background-color: @black_5;
+
+      &--tr {
+        background-color: transparent;
+      }
+    }
+
+    .field__code,
+    .field__input {
+      color: @black_75;
+    }
+  }
+
+  &--for-array {
+    @media @bw768 {
+      padding-top: 30px;
+    }
+
+    & .field__label {
+      display: none;
+      top: -30px;
+      left: 0;
+      overflow: visible;
+      font-size: 14px;
+      line-height: 1.17;
+      color: @black_75;
+
+      @media @bw768 {
+        display: block;
+      }
+    }
+
+    & .field__input {
+      height: 50px;
+      padding: 15px 20px;
+
+      &--has-value,
+      &:focus {
+        & ~ .field__label {
+          color: @black_75;
+          transform: none;
+        }
+      }
+    }
+
+    & ~ .form__delete-set {
+
+      @media @bw768 {
+        margin-top: 10px;
+      }
+    }
+  }
+
+  &--input-pb {
+    & .field__input {
+      padding: 15px 20px;
+    }
+  }
+
+  &__wrap {
+    display: flex;
+    position: relative;
+    width: 100%;
+    border-radius: 20px;
+    background-color: @white;
+    cursor: text;
+
+    &:hover {
+      .field__border {
+        @media (hover: hover) {
+          border-color: @black_75;
+        }
+      }
+    }
+  }
+
+  &__description {
+    margin-top: 20px;
+    font-size: 14px;
+    color: @black_75;
+  }
+
+
+  &__input,
+  &__text-area {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    background: transparent;
+    color: @black;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.2;
+    transition: border-color 0.2s;
+
+    &--has-value,
+    &:focus {
+      & ~ .field__label {
+        color: @black_75;
+        transform: translate(0, -11px) scale(0.8);
+      }
+    }
+
+    &:focus ~ .field__border {
+      border-color: @black_75;
+    }
+
+    &--has-error ~ .field__border {
+      border-color: @red;
+    }
+  }
+
+  &__select {
+    &--has-error .vs__dropdown-toggle {
+      border-color: @red;
+    }
+  }
+
+  &__input {
+    display: block;
+    height: 60px;
+    padding: 15px 20px 0;
+    border-radius: 20px;
+
+    &--search {
+      padding: 0 20px 0 0;
+    }
+
+
+    &::placeholder {
+      @media @bw500 {
+        font-size: 13px;
+      }
+    }
+  }
+
+  &__text-area {
+    height: 102px;
+    margin: 28px 20px 10px 0;
+    padding: 0px 20px 10px;
+    border-radius: 0 0 20px 20px;
+  }
+
+  &__select {
+    width: 100%;
+  }
+
+  &__border {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid @black_25;
+    border-radius: 20px;
+    transition: border-color 0.2s;
+    pointer-events: none;
+  }
+
+  &__label {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    top: 21px;
+    left: 20px;
+    right: 20px;
+    color: @black_75;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: transform 0.2s, opacity 0.2s;
+    transform-origin: 0 50%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+    
+
+    &--required {
+      &::after {
+        content: "*";
+      }
+    }
+  }
+
+  &__top-label {
+    display: inline-block;
+    margin-bottom: 12px;
+
+    font-size: 14px;
+    color: @black_75;
+
+    &--required {
+      &::after {
+        content: "*";
+      }
+    }
+  }
+
+  &__clear {
+    padding-right: 20px;
+  }
+
+  &__search {
+    padding-left: 20px;
+    padding-right: 12px;
+    color: @black_75;
+    transition: color 0.3s ease;
+
+    &--black {
+      color: @black;
+    }
+  }
+
+  &__btn,
+  &__icon {
+    flex-shrink: 0;
+    display: flex;
+    width: 60px;
+    color: @black_75;
+    cursor: pointer;
+
+    &:last-child {
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+  }
+
+  &__btn {
+    &:active {
+      color: @orange;
+    }
+
+    &:hover {
+      @media (hover: hover) {
+        color: @orange;
+      }
+    }
+  }
+}

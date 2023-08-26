@@ -1,0 +1,85 @@
+.btn {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 16px;
+  background-color: @red_75;
+  border-radius: 12px;
+  color: @white;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    @media (hover: hover) {
+      background-color: @red;
+    }
+  }
+
+  &:active {
+    background-color: @red;
+  }
+
+  &:disabled {
+    background-color: @gray;
+    color: @black_75;
+    pointer-events: none;
+  }
+
+  &--small {
+    padding: 12px;
+  }
+
+  &--right{
+    margin-left: auto;
+  }
+
+  &--outline {
+    border: 1px solid @stroke;
+    background: @white;
+    color: @red;
+    &:hover {
+      @media (hover: hover) {
+        border: 1px solid @red_10;
+        background: @red_10;
+      }
+    }
+  }
+
+  &--blue {
+    background-color: @blue_70;
+    &:hover {
+      @media (hover: hover) {
+        background-color: @blue;
+      }
+    }
+
+    &:active {
+      background-color: @blue;
+    }
+  }
+
+  &--sky {
+    color: @blue;
+    background: @white;
+    border: 1px solid @stroke;
+    &:hover {
+      @media (hover: hover) {
+        border: 1px solid @blue_50;
+        background: @blue_50;
+        color: @white;
+      }
+    }
+  }
+}
+
+button {
+  &:disabled {
+    pointer-events: none;
+  }
+}
