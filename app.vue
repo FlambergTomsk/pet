@@ -6,11 +6,15 @@
 </template>
 <script setup>
 import { useI18n } from "vue-i18n";
-const { locale, setLocaleMessage, mergeLocaleMessage } = useI18n();
+const { locale, setLocaleMessage } = useI18n();
 
 await import("./locales").then((messages) => {
   setLocaleMessage(locale.value, messages[locale.value]);
 });
+
+const store = useStoreCity();
+store.currentCities = JSON.parse(localStorage.getItem("cities") || '[]');
+
 
 useHead({
   link: [

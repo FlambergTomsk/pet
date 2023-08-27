@@ -71,7 +71,7 @@ onMounted(() => {
           Authorization: config.public.cities_key,
         },
       }).then((data) => {
-        store.setCities([data.region]);
+        store.setCities([{city: data.region}]);
       });
     });
   }
@@ -81,13 +81,13 @@ watch(
   () => [store.currentCities, locale.value],
   () => {
     currentWeather.value = [];
-    store.currentCities.forEach((city) => {
+    store.currentCities.forEach((item) => {
       getBasicWeather(
-        city.name,
-        city.countryCode,
-        city.id,
-        city.latitude,
-        city.longitude
+        item.city.name,
+        item.city.countryCode,
+        item.city.id,
+        item.city.latitude,
+        item.city.longitude
       );
     });
   },
@@ -100,9 +100,9 @@ watch(
   () => currentWeather.value,
   () => {
     orderedArray.value = [];
-    store.currentCities.forEach((city) => {
+    store.currentCities.forEach((item) => {
       const orderedItem = currentWeather.value.find(
-        (weather) => weather.id === city.id
+        (weather) => weather.id === item.city.id
       );
       if (orderedItem) {
         orderedArray.value.push(orderedItem);
@@ -140,6 +140,7 @@ watch(
   &__cards {
     display: flex;
     justify-content: space-evenly;
+    align-items: flex-start;
     flex-wrap: wrap;
     grid-area: cards;
     row-gap: 40px;

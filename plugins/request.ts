@@ -17,10 +17,10 @@ export default defineNuxtPlugin(() => {
       request: (options: options) => {
         if (!options || typeof options !== "object") return;
 
-        const { $getUrl, $t } = useNuxtApp();
+        const { $t } = useNuxtApp();
 
         const url: string =
-          options.url || $getUrl(options.path, options.params);
+          options.url
         if (!url) return;
 
         const headers = options.headers;

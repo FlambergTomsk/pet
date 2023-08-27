@@ -3,22 +3,22 @@
     <fieldset
       class="form__clone-group"
       v-for="(field, idx) in fields"
-      :key="idx"
+      :key="field.key + idx"
     >
       <FieldSelect
-        @getOptions="getOptions"
         class="form__field form__select"
         :config="{
-          name: `cities[${idx}]`,
+          name: `cities[${idx}].city.name`,
           label: $t('modal.city_choose'),
           optionLabel: 'name',
           optionValue: 'id',
           searchLength: searchLength,
           searchable: true,
           rules: {
-            required: true,
-          },
+            required: true
+          }
         }"
+        @change="(options) => updateField(options, idx)"
         :submitCount="submitCount"
       />
 
@@ -57,34 +57,20 @@ import { useForm, useFieldArray } from "vee-validate";
 const storeCity = useStoreCity();
 const store = useStore();
 
-const { handleSubmit, submitCount } = useForm({
+const { handleSubmit, submitCount, values, setFieldValue } = useForm({
   initialValues: {
-    cities: storeCity.currentCities,
-  },
+    cities: storeCity.currentCities || [{}]
+  }
 });
 
 const { fields, push, remove } = useFieldArray("cities");
 
 const onSubmit = handleSubmit((formValues) => {
-  console.log(formValues);
-  let fullWeatherInfo = {};
-
-  // currentOptionsArray.value.forEach((el) => {
-  //   if (el.id === formValues.cities[0].name) {
-  //     fullWeatherInfo = el;
-  //   }
-  // });
-
-  // console.log(fullWeatherInfo);
-
   storeCity.setCities(formValues.cities);
   store.modal.setting = false;
 });
-
-const currentOptionsArray = ref([]);
-
-const getOptions = (array) => {
-  currentOptionsArray.value = array;
+const updateField = (val, idx) => {
+  setFieldValue(`cities[${idx}].city`, val);
 };
 
 const searchLength = 3;

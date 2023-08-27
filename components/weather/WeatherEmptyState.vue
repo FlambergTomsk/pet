@@ -35,7 +35,7 @@
     justify-content: center;
     font-size: 20px;
     font-weight: 400;
-    min-height: 373px;
+    min-height: 393px;
   }
 
 }

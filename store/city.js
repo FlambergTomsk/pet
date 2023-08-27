@@ -1,17 +1,19 @@
 export const useStoreCity = defineStore("city", {
   state: () => ({
-    currentCities: JSON.parse(localStorage.getItem("cities") || "[]"),
+    currentCities: [],
   }),
   actions: {
     setCities(data) {
       this.currentCities = [];
-      data.forEach((city) => {
+      data.forEach((item) => {
         this.currentCities.push({
-          id: city.id,
-          latitude: city.latitude,
-          longitude: city.longitude,
-          name: city.name,
-          countryCode: city.countryCode,
+          city: {
+            id: item.city.id,
+            latitude: item.city.latitude,
+            longitude: item.city.longitude,
+            name: item.city.name,
+            countryCode: item.city.countryCode,
+          },
         });
       });
       localStorage.setItem("cities", JSON.stringify(this.currentCities));

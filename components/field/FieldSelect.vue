@@ -4,10 +4,10 @@
       <InputSelect
         class="field__select"
         :class="{ 'field__select--has-error': errorMessage && submitCount }"
-        v-model="value"
+        :modelValue="value"
         :hasValue="hasValue"
         :config="config"
-        @getOptions="getOptions"
+        @update:modelValue="onUpdate"
       />
     </div>
     <div v-if="errorMessage && submitCount" class="field__error error-msg">
@@ -19,21 +19,21 @@
 <script setup>
 import { useField } from "vee-validate";
 
-const emit = defineEmits(["change", "getOptions"]);
+const emits = defineEmits(["change"]);
 
 const props = defineProps({
   initialValue: {
-    default: undefined,
+    default: undefined
   },
   config: {
     type: Object,
     default: () => ({}),
-    required: true,
+    required: true
   },
   submitCount: {
     type: Number,
-    default: 0,
-  },
+    default: 0
+  }
 });
 
 const config = reactive(props.config);
@@ -57,24 +57,22 @@ const disabled = computed(() => {
 //field
 const { value, errorMessage } = useField(name.value, rules.value, {
   initialValue: props.initialValue,
-  label: label.value ? `«${label.value}»` : " ",
+  label: label.value ? `«${label.value}»` : " "
 });
+
+const onUpdate = (options) => {
+  value.value = options.reduced;
+  emits("change", options.value);
+};
 
 const hasValue = ref(false);
 
-const getOptions = (array) => {
-  emit("getOptions", array);
-};
-
 watch(
   () => value.value,
-  (val) => {
+  () => {
     hasValue.value = value.value || value.value === 0 ? true : false;
-    emit("change", val);
   },
-  {
-    immediate: true,
-  }
+  { immediate: true }
 );
 </script>
 
