@@ -1,33 +1,34 @@
 <template>
-  <main class="app">
+  <div class="app">
     <NuxtPage />
     <ModalSetting />
-  </main>
+  </div>
 </template>
 <script setup>
 import { useI18n } from "vue-i18n";
 const { locale, setLocaleMessage, mergeLocaleMessage } = useI18n();
-
+const store = useStoreCity();
 await import("./locales").then((messages) => {
   setLocaleMessage(locale.value, messages[locale.value]);
 });
-
+// localStorage.setItem("cities", "[]");
+store.currentCities = JSON.parse(localStorage.getItem("cities"));
 useHead({
   link: [
     {
       rel: "preconnect",
-      href: "https://fonts.googleapis.com",
+      href: "https://fonts.googleapis.com"
     },
     {
       rel: "preconnect",
       href: "https://fonts.gstatic.com",
-      crossorigin: "anonymous",
+      crossorigin: "anonymous"
     },
     {
       rel: "stylesheet",
-      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap",
-    },
-  ],
+      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+    }
+  ]
 });
 
 watch(

@@ -1,18 +1,23 @@
 <template>
-  <div class="page">
-    <Weather />
+  <div class="test">
+    Page
+    <div class="block"> block block block block block blockblock block block block block blockblock block block block block block</div>
+    <SvgIcon name="trash" class="trash"/>
   </div>
 </template>
 
-<script setup></script>
+<script>
+</script>
 
 <style lang="less">
-.page {
-  max-width: 1600px;
-  padding: 0 20px;
-  margin: 0 auto;
-  @media @bw450 {
-    padding: 0 8px;
-    }
+.test {
+  background-color: @red_5;
+}
+.block {
+  background-color: @orange_25;
+  font-size: 25px;
+}
+.trash {
+  color: red
 }
 </style>

@@ -1,26 +1,17 @@
 <template>
   <li
-    v-click-outside="{ handler: closeOutside, isActive: clickOutside }"
     class="accordion__item"
     :class="[
       {
-        'accordion__item--active': isExpandable
-          ? isActive
-          : visible && !isEmpty,
-        'accordion__item--no-border': noBorder,
-        'accordion__item--arrow-icon': arrowIcon
-      }
+        'accordion__item--active': visible,
+      },
     ]"
     ref="refEl"
   >
     <header class="accordion__header" role="heading">
       <!-- Header slots -->
 
-      <div
-        class="accordion__header-btn"
-        :class="{ 'accordion__header-btn--no-active': isEmpty }"
-        @click="toggle"
-      >
+      <div class="accordion__header-btn" @click="toggle">
         <slot name="custom_header"></slot>
 
         <h4 v-if="!$slots.custom_header" class="accordion__title">
@@ -28,14 +19,7 @@
         </h4>
 
         <div class="accordion__icon">
-          <SvgIcon
-            v-if="arrowIcon"
-            name="arrow-down"
-            width="12"
-            height="8"
-            class="accordion__arrow"
-          />
-          <div v-else class="accordion__plus"></div>
+          <div class="accordion__plus"></div>
         </div>
       </div>
     </header>
@@ -49,8 +33,8 @@
     >
       <div
         class="accordion__slide"
-        v-show="visible && !isEmpty"
-        :aria-hidden="visible && !isEmpty ? 'false' : 'true'"
+        v-show="visible"
+        :aria-hidden="visible ? 'false' : 'true'"
         @click="toggle"
       >
         <div class="accordion__content">
@@ -66,49 +50,11 @@
 const accordion = inject("accordion");
 const refEl = ref(null);
 
-const props = defineProps({
-  isExpanded: {
-    type: Boolean
-  },
-  isEmpty: {
-    type: Boolean,
-    default: false
-  },
-  noBorder: {
-    type: Boolean,
-    default: false
-  },
-  arrowIcon: {
-    type: Boolean,
-    default: false
-  },
-  clickOutside: {
-    type: Boolean,
-    default: false
-  },
-  clickOutsideDesktop: {
-    type: Boolean,
-    default: true
-  },
-  clickOutsideMobile: {
-    type: Boolean,
-    default: false
-  }
-});
-
 let index = ref(null);
-let isExpandable = ref(false);
 let isActive = ref(false);
 
-let visible = computed(
-  () =>
-    index.value == accordion.active || (isExpandable.value && isActive.value)
-);
+let visible = computed(() => index.value == accordion.active || isActive.value);
 index.value = accordion.count++;
-
-isExpandable.value = accordion.isExpandable;
-
-if (isExpandable.value && props.isExpanded) isActive.value = true;
 
 function open() {
   isActive.value = true;
@@ -126,19 +72,6 @@ function toggle() {
   } else {
     open();
   }
-}
-
-function closeOutside() {
-  if (
-    props.clickOutsideDesktop &&
-    window.matchMedia("(min-width: 1020px)").matches
-  )
-    close();
-  if (
-    props.clickOutsideMobile &&
-    window.matchMedia("(max-width: 1019px)").matches
-  )
-    close();
 }
 
 //hooks
@@ -163,6 +96,6 @@ function beforeLeave(el) {
 
 defineExpose({
   refEl: refEl,
-  open: open
+  open: open,
 });
 </script>

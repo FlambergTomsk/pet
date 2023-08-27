@@ -1,46 +1,30 @@
 <template>
   <div class="weather">
-    <div class="weather__header">
-      <h1 class="weather__title">
-        {{ $t("common.title") }}
-      </h1>
-      <LocaleSwitcher class="weather__switcher" />
-    </div>
-    <div class="weather__wrapper">
-      <section class="weather__blog">
-        <WeatherBlog />
-      </section>
-
-      <div class="weather__cards">
-        <WeatherCard
-          v-for="(item, ind) in orderedArray"
-          :item="item"
-          :isFirst="ind === 0"
-        />
-        <WeatherEmptyState v-if="!orderedArray.length" />
-      </div>
-    </div>
+    <WeatherCard
+      v-for="(item, ind) in currentWeather"
+      :item="item"
+      :isFirst="ind === 0"
+    >
+    </WeatherCard>
   </div>
 </template>
 
 <script setup>
-import { useI18n } from "vue-i18n";
-
-const { locale } = useI18n();
 const { $request, $t } = useNuxtApp();
+
 const config = useRuntimeConfig();
+
 const store = useStoreCity();
 
 const currentWeather = ref([]);
-const orderedArray = ref([]);
 
 const units = "metric";
 
 const getBasicWeather = (cityName, countryCode, id, lat, lon) => {
   $request({
     method: "GET",
-    url: `${config.public.base_url}/weather?lat=${lat}&lon=${lon}&lang=${locale.value}&appid=${config.public.api_key}&units=${units}`,
-    msg: $t("common.weather_loaded", { cityName: cityName }),
+    url: `${config.public.base_url}/weather?lat=${lat}&lon=${lon}&appid=${config.public.api_key}&units=${units}`,
+    msg: $t("common.weather_loaded", { cityName: cityName })
   }).then((data) => {
     currentWeather.value.push({
       ...data,
@@ -51,16 +35,28 @@ const getBasicWeather = (cityName, countryCode, id, lat, lon) => {
       condition: data.weather[0].description,
       maxTemp: Math.floor(data.main.temp_max),
       minTemp: Math.floor(data.main.temp_min),
-      weatherIcon: data.weather[0].icon,
+      weatherIcon: data.weather[0].icon
     });
   });
 };
 
+// const orderedCurrentWeather = computed(() => {
+//   const orderedArray = [];
+//   store.currentCities.forEach((city) => {
+//     currentWeather.value.forEach((weather) => {
+//       if (city.id === weather.id) {
+//         orderedArray.push(weather);
+//       }
+//     });
+//   });
+//   return orderedArray
+// });
+
 onMounted(() => {
-  if (!localStorage.getItem("cities")) {
+  if (!store.currentCities?.length) {
     $request({
       method: "GET",
-      url: `${config.public.ip_url}?format=json`,
+      url: `${config.public.ip_url}?format=json`
     }).then((data) => {
       const ip = data.ip;
       $request({
@@ -68,98 +64,75 @@ onMounted(() => {
         url: `${config.public.cities_url}/network?ip=${ip}`,
         headers: {
           "Content-type": "application/json",
-          Authorization: config.public.cities_key,
-        },
+          Authorization: config.public.cities_key
+        }
       }).then((data) => {
-        store.setCities([data.region]);
+        store.setCities([{ city: data.region }]);
       });
     });
   }
 });
 
 watch(
-  () => [store.currentCities, locale.value],
+  () => store.currentCities,
   () => {
     currentWeather.value = [];
-    store.currentCities.forEach((city) => {
+    if (!store.currentCities) return;
+    store.currentCities.forEach((item) => {
+      console.log(item);
       getBasicWeather(
-        city.name,
-        city.countryCode,
-        city.id,
-        city.latitude,
-        city.longitude
+        item.city.name,
+        item.city.countryCode,
+        item.city.id,
+        item.city.latitude,
+        item.city.longitude
       );
     });
   },
   {
-    immediate: true,
+    immediate: true
   }
-);
-
-watch(
-  () => currentWeather.value,
-  () => {
-    orderedArray.value = [];
-    store.currentCities.forEach((city) => {
-      const orderedItem = currentWeather.value.find(
-        (weather) => weather.id === city.id
-      );
-      if (orderedItem) {
-        orderedArray.value.push(orderedItem);
-      }
-    });
-  },
-  { deep: true }
 );
 </script>
 
 <style lang="less" scoped>
 .weather {
+  &__content {
+    width: 250px;
+    background: @blue_gradient;
+    padding: 40px;
+    border-radius: 40px;
+    color: @white;
+  }
+
   &__header {
     display: flex;
-    justify-content: center;
-    @media @bw450 {
-    flex-direction: column;
-    }
+    align-items: center;
   }
-  &__title {
-    text-align: center;
-    width: 100%;
-    @media @bw450 {
-    text-align: left;
-    }
+
+  &__city {
+    margin: 0 12px;
   }
-  &__switcher {
+
+  &__setting {
     margin-left: auto;
+    color: @white;
   }
 
-  &__blog {
-    grid-area: blog;
+  &__main {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
   }
 
-  &__cards {
-    display: flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    grid-area: cards;
-    row-gap: 40px;
-    column-gap: 20px;
-    @media @bw768 {
-      padding-top: 20px;
-    }
-  }
-
-  &__wrapper {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-areas: "blog cards cards";
-    column-gap: 40px;
-    @media @bw768 {
-      grid-template-columns: 1fr;
-      grid-template-areas:
-        "blog"
-        "cards";
-    }
+  &__temperature {
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
   }
 }
 </style>

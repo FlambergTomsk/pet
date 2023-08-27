@@ -2,6 +2,7 @@
   <v-select
     class="vs"
     v-model="innerValue"
+    :reduce="(option) => (typeof option === 'object' ? option : option)"
     :label="optionLabel"
     :options="options"
     :disabled="disabled"
@@ -20,10 +21,10 @@
     :loading="loading"
     :class="{
       'vs--has-value': hasValue || loading,
-      'vs--clearable': clearable,
+      'vs--clearable': clearable
     }"
+    @option:selected="update"
     @search="onSearch"
-    @update:modelValue="onUpdate"
   >
     <template #header v-if="label">
       <span class="vs__label"> {{ label }}</span>
@@ -61,22 +62,21 @@
 </template>
 <script setup>
 const { $request } = useNuxtApp();
-
 const props = defineProps({
   modelValue: {
-    type: [String, Number, Object],
+    type: [String, Number, Object]
   },
   config: {
     type: Object,
     default: () => ({}),
-    required: true,
+    required: true
   },
   hasValue: {
-    type: Boolean,
-  },
+    type: Boolean
+  }
 });
 
-const emits = defineEmits(["update:modelValue", "getOptions"]);
+const emits = defineEmits(["update:modelValue"]);
 
 const innerValue = ref(props.modelValue);
 const config = reactive(props.config);
@@ -162,17 +162,14 @@ const getOptions = (search) => {
     method: "GET",
     headers: {
       "Content-type": "application/json",
-      Authorization: configure.public.cities_key,
-    },
+      Authorization: configure.public.cities_key
+    }
   }).then((data) => {
     ajaxOptions.value = Array.isArray(data) ? data : [];
-    emits("getOptions", ajaxOptions.value);
     loading.value = false;
   });
 };
-
-const onUpdate = (val) => {
-  emits("update:modelValue", val);
-  console.log(val)
+const update = (val) => {
+  emits("update:modelValue", { reduced: val.id, value: val });
 };
 </script>

@@ -1,7 +1,6 @@
 <template>
   <ul
     class="accordion"
-    :class="{ 'accordion--lc-border-none': lastChildNoBorder }"
   >
     <slot></slot>
   </ul>
@@ -13,20 +12,13 @@ const props = defineProps({
   active: {
     type: Number
   },
-  isExpandable: {
-    type: Boolean
-  },
-  lastChildNoBorder: {
-    type: Boolean,
-    default: false
-  }
+
 });
 
 //variables
 const accordion = reactive({
   count: 0,
   active: props.active,
-  isExpandable: props.isExpandable
 });
 provide("accordion", accordion);
 

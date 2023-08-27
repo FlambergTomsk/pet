@@ -1,32 +1,38 @@
 <template>
-  <div class="weather-card">
-    <div class="weather-card__content">
-      <div class="weather-card__header">
-        <SvgIcon name="map" width="24" height="24" class="weather-card__map" />
+  <div class="weather">
+    <div class="weather__content">
+      <div class="weather__header">
+        <SvgIcon name="map" width="24" height="24" class="weather__map" />
 
-        <div class="weather-card__city">{{ item.city }},</div>
+        <div class="weather__city">{{ item.city }},</div>
 
-        <div class="weather-card__country">
+        <div class="weather__country">
           {{ item.countryCode }}
         </div>
 
-        <WeatherSettings v-if="isFirst" class="weather-card__setting"/>
+        <button
+          v-if="isFirst"
+          @click="showSettingModal"
+          class="weather__setting"
+        >
+          <SvgIcon name="gear" width="28" height="28" class="weather__gear" />
+        </button>
       </div>
-      <div class="weather-card__main">
-        <div class="weather-card__picture">
-          <img
-            :src="`icons/${item.weatherIcon}.svg`"
-            alt="user"
-            class="weather-card__type"
-          />
-        </div>
+      <div class="weather__main">
+        <SvgIcon
+          v-if="item.weatherIcon"
+          :name="item.weatherIcon"
+          width="150"
+          height="150"
+          class="weather__type"
+        />
 
-        <div class="weather-card__temperature">{{ item.temperature }}&degC</div>
+        <div class="weather__temperature">{{ item.temperature }}&deg</div>
 
-        <span lass="weather-card-card__condition">{{ item.condition }}</span>
+        <span lass="weather__condition">{{ item.condition }}</span>
 
-        <div class="weather-card__max">
-          Max.: {{ item.maxTemp }}&degC Min.: {{ item.minTemp }}&degC
+        <div class="weather__max">
+          Max.: {{ item.maxTemp }}&deg Min.: {{ item.minTemp }}&deg
         </div>
         <WeatherPanel
           :humidity="item.main.humidity"
@@ -49,19 +55,22 @@ const props = defineProps({
     default: false,
   },
 });
+
+const { $emitter } = useNuxtApp();
+
+const showSettingModal = () => {
+  $emitter.emit("showSettingModal");
+};
 </script>
 
 <style lang="less" scoped>
-.weather-card {
+.weather {
   &__content {
     width: 250px;
     background: @blue_gradient;
     padding: 40px;
     border-radius: 40px;
     color: @white;
-    @media @bw450 {
-      padding: 20px;
-    }
   }
 
   &__header {
@@ -82,6 +91,7 @@ const props = defineProps({
 
   &__setting {
     margin-left: auto;
+    color: @white;
   }
 
   &__main {
@@ -100,17 +110,29 @@ const props = defineProps({
     line-height: normal;
   }
 
-  &__picture {
-    width: 150px;
-    height: 150px;
-    margin: 0 auto;
+  &__setting {
+    width: 28px;
+    height: 28px;
+    animation: example 2s linear infinite;
+    animation-play-state: paused;
+
+    &:hover {
+      @media (hover: hover) {
+        animation-play-state: running;
+      }
+    }
   }
 
-  &__type {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: inline-block;
+  @keyframes example {
+    0% {
+      transform: rotate(0);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 }
 </style>
