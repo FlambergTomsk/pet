@@ -1,8 +1,8 @@
 <template>
-  <div class="app">
+  <main class="app">
     <NuxtPage />
     <ModalSetting />
-  </div>
+  </main>
 </template>
 <script setup>
 import { useI18n } from "vue-i18n";

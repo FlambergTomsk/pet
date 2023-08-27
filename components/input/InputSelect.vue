@@ -2,7 +2,6 @@
   <v-select
     class="vs"
     v-model="innerValue"
-    :reduce="(option) => (typeof option === 'object' ? option : option)"
     :label="optionLabel"
     :options="options"
     :disabled="disabled"
@@ -77,7 +76,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["update:modelValue"]);
+const emits = defineEmits(["update:modelValue", "getOptions"]);
 
 const innerValue = ref(props.modelValue);
 const config = reactive(props.config);
@@ -133,12 +132,8 @@ const optionLabel = computed(() => {
   );
 });
 
-
-
 const searchLength = computed(() => {
-  return (
-    typeof config.searchLength === "number" && config.searchLength
-  );
+  return typeof config.searchLength === "number" && config.searchLength;
 });
 //search
 
@@ -171,11 +166,13 @@ const getOptions = (search) => {
     },
   }).then((data) => {
     ajaxOptions.value = Array.isArray(data) ? data : [];
+    emits("getOptions", ajaxOptions.value);
     loading.value = false;
   });
 };
 
 const onUpdate = (val) => {
   emits("update:modelValue", val);
+  console.log(val)
 };
 </script>

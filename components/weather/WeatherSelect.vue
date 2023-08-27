@@ -6,6 +6,7 @@
       :key="idx"
     >
       <FieldSelect
+        @getOptions="getOptions"
         class="form__field form__select"
         :config="{
           name: `cities[${idx}]`,
@@ -35,7 +36,7 @@
       <button
         v-if="fields.length < searchLength"
         type="button"
-        @click="push()"
+        @click="push({})"
         class="form__btn btn btn--small btn--sky"
       >
         {{ $t("buttons.add") }}
@@ -53,7 +54,6 @@
 <script setup>
 import { useForm, useFieldArray } from "vee-validate";
 
-
 const storeCity = useStoreCity();
 const store = useStore();
 
@@ -66,10 +66,26 @@ const { handleSubmit, submitCount } = useForm({
 const { fields, push, remove } = useFieldArray("cities");
 
 const onSubmit = handleSubmit((formValues) => {
-  console.log(formValues)
+  console.log(formValues);
+  let fullWeatherInfo = {};
+
+  // currentOptionsArray.value.forEach((el) => {
+  //   if (el.id === formValues.cities[0].name) {
+  //     fullWeatherInfo = el;
+  //   }
+  // });
+
+  // console.log(fullWeatherInfo);
+
   storeCity.setCities(formValues.cities);
   store.modal.setting = false;
 });
+
+const currentOptionsArray = ref([]);
+
+const getOptions = (array) => {
+  currentOptionsArray.value = array;
+};
 
 const searchLength = 3;
 </script>

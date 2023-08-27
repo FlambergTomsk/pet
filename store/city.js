@@ -11,10 +11,10 @@ export const useStoreCity = defineStore("city", {
           latitude: city.latitude,
           longitude: city.longitude,
           name: city.name,
-          countryCode: city.countryCode
+          countryCode: city.countryCode,
         });
       });
       localStorage.setItem("cities", JSON.stringify(this.currentCities));
-    }
+    },
   },
 });

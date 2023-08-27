@@ -7,6 +7,7 @@
         v-model="value"
         :hasValue="hasValue"
         :config="config"
+        @getOptions="getOptions"
       />
     </div>
     <div v-if="errorMessage && submitCount" class="field__error error-msg">
@@ -18,7 +19,7 @@
 <script setup>
 import { useField } from "vee-validate";
 
-const emit = defineEmits(["change"]);
+const emit = defineEmits(["change", "getOptions"]);
 
 const props = defineProps({
   initialValue: {
@@ -61,13 +62,14 @@ const { value, errorMessage } = useField(name.value, rules.value, {
 
 const hasValue = ref(false);
 
+const getOptions = (array) => {
+  emit("getOptions", array);
+};
 
 watch(
   () => value.value,
   (val) => {
-    hasValue.value = value.value || value.value === 0
-    ? true
-    : false;
+    hasValue.value = value.value || value.value === 0 ? true : false;
     emit("change", val);
   },
   {
